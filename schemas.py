@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, seed
 
 def set_value(schema: dict[str:str], model: dict, name: str, value: any):
     param = schema[name]
@@ -19,7 +19,9 @@ def set_value(schema: dict[str:str], model: dict, name: str, value: any):
     level[path[-1]] = value
 
 def set_seed(schema: dict[str:str], model: dict):
+    seed()
     for i in range(1000):
-        if not str(i) in schema.keys():
+        if not f"rseed{i}" in schema.keys():
+            print(f"rseed{i}", schema.keys())
             break
         set_value(schema, model, f"rseed{i}", randint(0, 10 ** 16))

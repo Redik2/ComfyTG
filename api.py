@@ -15,8 +15,7 @@ def send_prompt(model_name: str, values: dict):
         except KeyError as e:
             print(f"Ключ {e} не указан в схеме, игнорирование")
     
-    if "rseed" in schema.keys():
-        schemas.set_seed(schema, model)
+    schemas.set_seed(schema, model)
 
     prompt = json.dumps({"prompt": model})
 
