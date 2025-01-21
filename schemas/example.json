@@ -10,5 +10,9 @@
     "negative": {
         "type": "str",
         "path": "8/inputs/text"
+    },
+    "chat_id": {
+        "type": "str",
+        "path": "5/inputs/filename_prefix"
     }
 }
