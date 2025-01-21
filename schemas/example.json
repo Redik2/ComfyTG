@@ -3,8 +3,12 @@
         "type": "int",
         "path": "6/inputs/seed"
     },
-    "prompt": {
+    "positive": {
         "type": "str",
         "path": "7/inputs/text"
+    },
+    "negative": {
+        "type": "str",
+        "path": "8/inputs/text"
     }
 }

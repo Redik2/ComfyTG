@@ -10,7 +10,10 @@ def send_prompt(model_name: str, values: dict):
     schema = json.load(open(f"schemas/{model_name}.json", "r"))
     
     for key, value in values.items():
-        schemas.set_value(schema, model, key, value)
+        try:
+            schemas.set_value(schema, model, key, value)
+        except KeyError as e:
+            print(f"Ключ {e} не указан в схеме, игнорирование")
     
     if "rseed" in schema.keys():
         schemas.set_seed(schema, model)
