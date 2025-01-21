@@ -38,7 +38,7 @@ def check_new_files():
     files = os.listdir(WATCH_FOLDER)
     for file_name in files:
         # Проверяем, является ли файл изображением
-        if not file_name.startswith("(sent)") and file_name.endswith(('.jpg', '.png', '.jpeg')):
+        if file_name.endswith(('.jpg', '.png', '.jpeg')):
             file_path = os.path.join(WATCH_FOLDER, file_name)
             # Отправляем файл пользователю
             print(send_file_to_chat(file_name, file_path))
