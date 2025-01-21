@@ -1,0 +1,10 @@
+{
+    "rseed": {
+        "type": "int",
+        "path": "6/inputs/seed"
+    },
+    "prompt": {
+        "type": "str",
+        "path": "7/inputs/text"
+    }
+}
