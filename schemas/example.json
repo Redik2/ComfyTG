@@ -1,5 +1,5 @@
 {
-    "rseed": {
+    "rseed0": {
         "type": "int",
         "path": "6/inputs/seed"
     },

@@ -19,4 +19,7 @@ def set_value(schema: dict[str:str], model: dict, name: str, value: any):
     level[path[-1]] = value
 
 def set_seed(schema: dict[str:str], model: dict):
-    set_value(schema, model, "rseed", randint(0, 10 ** 16))
+    for i in range(1000):
+        if not str(i) in schema.keys():
+            break
+        set_value(schema, model, f"rseed{i}", randint(0, 10 ** 16))
