@@ -30,9 +30,9 @@ def send_file_to_chat(file_name, file_path):
         chat_id = int(chat_id)
         with open(file_path, 'rb') as img:
             bot.send_photo(chat_id, img)
-        return f"Файл {file_name} отправлен пользователю {chat_id}."
+        return True, f"Файл {file_name} отправлен пользователю {chat_id}."
     except Exception as e:
-        return f"Ошибка отправки файла {file_name}: {e}"
+        return False, f"Ошибка отправки файла {file_name}: {e}"
 
 def check_new_files():
     files = os.listdir(WATCH_FOLDER)
@@ -41,8 +41,10 @@ def check_new_files():
         if file_name.endswith(('.jpg', '.png', '.jpeg')):
             file_path = os.path.join(WATCH_FOLDER, file_name)
             # Отправляем файл пользователю
-            print(send_file_to_chat(file_name, file_path))
-            os.rename(WATCH_FOLDER + "\\" + file_name, "sent\\" + str(randint(0, 10 ** 16)) + file_name)
+            result, log = send_file_to_chat(file_name, file_path)
+            print(log)
+            if result:
+                os.rename(WATCH_FOLDER + "\\" + file_name, "sent\\" + str(randint(0, 10 ** 16)) + file_name)
             
 
 def monitor_folder():
