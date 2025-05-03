@@ -6,27 +6,56 @@ from json import load
 import time
 import os
 
-token = load(open("config.json", "r"))["token"]
+token = load(open("config.json", "r"))["tg_token"]
 
 bot = telebot.TeleBot(token)
+system_prompt = open("system.txt", 'r', encoding="utf-8").read()
+history = [{"role": "system", "content": system_prompt}]
+
+parameters = {}
 
 WATCH_FOLDER = load(open("config.json", "r"))["output_folder"]
 
-@bot.message_handler(commands=['txt2img'])
-def txt2img(message: telebot.telebot.types.Message):
+@bot.message_handler()
+def on_message(message: telebot.telebot.types.Message):
+    global parameters, history
     content = message.text
-
-    prompt = prompt_handler.txt2prompt(content)
+    print(content)
+    if content.startswith('/config'):
+        parameters = prompt_handler.txt2parameters(content)
+        print(f"new parameters: {parameters}")
+        return
+    elif content.startswith('/clear'):
+        history = [{"role": "system", "content": system_prompt}]
+        return
+    elif content.startswith('/hide'):
+        bot.send_message(message.chat.id, ".\n" * 50)
+        return
+    elif content.startswith('.'):
+        return
+    
+    prompt = {"parameters": parameters.copy(), "model": parameters['model']}
     prompt["parameters"]["chat_id"] = message.chat.id
+    prompt['parameters'].pop('model')
 
-    api.send_prompt(model_name=prompt["model"], values=prompt["parameters"])
+    msg = bot.send_message(message.chat.id, "Thinking...")
 
+    try:
+        positive, negative, width, height = api.send_prompt(model_name=prompt["model"], values=prompt["parameters"], natural_language=content, history=history)
+
+        bot.edit_message_text(f"+ {positive}\n\n- {negative}\n\n{width}x{height}", msg.chat.id, msg.id)
+    except Exception as e:
+        bot.edit_message_text(f"Exception: {e}", msg.chat.id, msg.id)
+
+
+    while len(history) > 20:
+        history.pop(0)
 
 def send_file_to_chat(file_name, file_path):
     try:
         chat_id = file_name.split('_')[0]
         if not chat_id.isdigit():
-            return f"Некорректное имя файла: {file_name}"
+            return False, f"Некорректное имя файла: {file_name}"
         chat_id = int(chat_id)
         with open(file_path, 'rb') as img:
             bot.send_photo(chat_id, img)

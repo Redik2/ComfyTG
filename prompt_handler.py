@@ -1,20 +1,17 @@
-def txt2prompt(text: str):
-    prompt = {}
-    text = text.replace("/txt2img ", "")
+def txt2parameters(text: str):
+    parameters = {}
+    text = text.replace("/config ", "")
     raw_tags = text.split("--")
     
-    prompt["model"] = raw_tags[0][:-1]
+    parameters["model"] = raw_tags[0][:-1]
 
-    parameters = {}
     for tag in raw_tags[1:]:
         name = tag.split()[0]
         value = " ".join(tag.split()[1:])
 
         parameters[name] = value
-    
-    prompt["parameters"] = parameters
 
-    return prompt
+    return parameters
 
 
 if __name__ == "__main__":
